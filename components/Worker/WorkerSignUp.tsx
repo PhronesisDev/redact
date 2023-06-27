@@ -13,10 +13,8 @@ import Icon from 'react-native-vector-icons/AntDesign'
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const image = { uri: '.' }
-function WorkerLogin({ navigation }) {
-    const [email, setEmail] = React.useState<string>("");
-    const [password, setPassword] = useState<string>("")
+function WorkerSignUp({ navigation }) {
+    const [name, setName] = React.useState<string>("");
     const handleLogin = (e) => {
         e.preventDefault();
         // Handle login logic here
@@ -26,27 +24,21 @@ function WorkerLogin({ navigation }) {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <ImageBackground source={require('../images/redact-transparent.png')} style={{ width: '100%', height: '100%' }}>
-                    <View style={{ backgroundColor: 'transparent', flex: 1 }}>
+                <ImageBackground source={require('../../images/redact-transparent.png')} style={{ width: '100%', height: '100%' }}>
+                    <View style={{ backgroundColor: 'transparent', flex: 2 }}>
 
                     </View>
                     <View style={styles.buttonContainer}>
                         <TextInput
-                            label="Email"
-                            value={email}
-                            onChangeText={text => setEmail(text)}
-                            style={{marginBottom:20}}
-                        />
-                          <TextInput
-                            label="Password"
-                            value={password}
-                            secureTextEntry
-                            onChangeText={text => setPassword(text)}
-                            style={{marginBottom:20}}
+                            label="Name"
+                            value={name}
+                            onChangeText={text => setName(text)}
+                            style={{marginBottom:5}}
                         />
                         <Touch style={styles.button} onPress={() => navigation.navigate('Login')}>
-                            <Text style={styles.buttonText}>Login</Text>
+                            <Text style={styles.buttonText}>Next</Text>
                         </Touch>
+                        
                     </View>
                 </ImageBackground>
 
@@ -60,7 +52,7 @@ function WorkerLogin({ navigation }) {
     );
 }
 
-export default WorkerLogin;
+export default WorkerSignUp;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -91,7 +83,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
 
         flex: 1,
-        justifyContent:'space-evenly',
+        justifyContent: 'space-evenly',
         backgroundColor: 'white',
         padding: 10,
         borderWidth: 1,

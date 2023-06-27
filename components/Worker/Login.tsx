@@ -22,10 +22,9 @@ function Login({navigation}) {
         // Handle login logic here
     };
 
-
     return (
         <View style={styles.container}>
-            <ImageBackground  source={require('../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
+            <ImageBackground  source={require('../../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
                 <View style={{ backgroundColor: 'transparent', flex: 4 }}>
 
                 </View>

@@ -5,16 +5,13 @@
  * @format
  */
 
-import React, { useState } from 'react';
-import type { PropsWithChildren } from 'react';
-import {
-  StyleSheet,
-  useColorScheme,
-} from 'react-native';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import Login from './components/Login';
+import React, {useState} from 'react';
+import type {PropsWithChildren} from 'react';
+import {StyleSheet, useColorScheme} from 'react-native';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import Login from './components/Worker/Login';
 import Signup from './components/SignUp';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Worker/Dashboard';
 import {
   Colors,
   DebugInstructions,
@@ -22,29 +19,27 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import WorkerLogin from './components/WorkerLogin';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import WorkerLogin from './components/Worker/WorkerLogin';
+import WorkerSignUp from './components/Worker/WorkerSignUp';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='Login' component={Login} />
-        <Stack.Screen name="WorkerLogin" component={WorkerLogin}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="WorkerLogin" component={WorkerLogin} />
+          <Stack.Screen name="WorkerSignUp" component={WorkerSignUp} />
+          <Stack.Screen name="Dashboard" component={Dashboard} />
+        </Stack.Navigator>
+      </NavigationContainer>
+  
   );
 }
 
