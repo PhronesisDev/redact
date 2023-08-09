@@ -25,9 +25,7 @@ function WorkerSignUp({ navigation }) {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
                 <ImageBackground source={require('../../images/redact-transparent.png')} style={{ width: '100%', height: '100%' }}>
-                    <View style={{ backgroundColor: 'transparent', flex: 2 }}>
-
-                    </View>
+                    
                     <View style={styles.buttonContainer}>
                         <TextInput
                             label="Name"
@@ -58,7 +56,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
-        backgroundColor: '#219DBF'
+        backgroundColor: '#219DBF',
+        width: windowWidth,
+        height: windowHeight
     },
     button: {
         alignItems: 'center',

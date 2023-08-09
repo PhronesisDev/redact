@@ -3,7 +3,7 @@ import WorkerContext, { WorkerContextArgs, createWorkerContext } from "./WorkerC
 
 type WorkerProps ={
     workerContext: WorkerContext;
-    children: (arg: WorkerContextArgs)=> ReactNode;
+    children: (arg: WorkerContextArgs)=> React.ReactElement;
 }
 
 const Worker: React.FC <WorkerProps> =({workerContext, children})=>(<workerContext.Consumer>

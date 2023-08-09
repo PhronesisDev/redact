@@ -1,59 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     SafeAreaView,
-    ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
-    useColorScheme,
-    Button,
     TouchableOpacity as Touch,
     Dimensions,
     View,
     ImageBackground,
 } from 'react-native';
+import { TextInput } from 'react-native-paper';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const image = { uri: '.' }
-function Login({navigation}) {
+function BusinessSignUp({ navigation }) {
+    const [name, setName] = React.useState<string>("");
     const handleLogin = (e) => {
         e.preventDefault();
         // Handle login logic here
     };
 
+
     return (
-        <View style={styles.container}>
-            <ImageBackground  source={require('../../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
-                <View style={{ backgroundColor: 'transparent', flex: 4 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.container}>
+                <ImageBackground source={require('../../images/redact-transparent.png')} style={{ width: '100%', height: '100%' }}>
+                    <View style={{ backgroundColor: 'transparent', flex: 2 }}>
 
-                </View>
-                <View style={styles.buttonContainer}>
-                    <Touch style={styles.button} onPress={()=> navigation.navigate('WorkerLogin')}>
-                        <Text style={styles.buttonText}>Login As Worker</Text>
-                    </Touch>
-                    <Text style={{ textAlign: 'center', fontWeight:'bold' }}>Or</Text>
-                    <Touch style={styles.alternativeButton}>
-                        <Text style={styles.buttonText}>Login As Company</Text>
-                    </Touch>
-                </View>
-            </ImageBackground>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <TextInput
+                            label="Name"
+                            value={name}
+                            onChangeText={text => setName(text)}
+                            style={{marginBottom:5}}
+                        />
+                        <Touch style={styles.button} onPress={() => navigation.navigate('Login')}>
+                            <Text style={styles.buttonText}>Next</Text>
+                        </Touch>
+                        
+                    </View>
+                </ImageBackground>
 
 
 
-        </View>
+            </View>
+        </SafeAreaView>
+
 
 
     );
 }
 
-export default Login;
+export default BusinessSignUp;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
-        backgroundColor:'#219DBF'
+        backgroundColor: '#730360',
+        width: windowWidth,
+        height: windowHeight
     },
     button: {
         alignItems: 'center',
@@ -78,7 +84,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
 
         flex: 1,
-        justifyContent: 'flex-end',
+        justifyContent: 'space-evenly',
         backgroundColor: 'white',
         padding: 10,
         borderWidth: 1,
