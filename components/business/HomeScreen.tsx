@@ -13,7 +13,6 @@ const HomeScreen = ({ navigation }) => {
       <Text >Card title</Text>
       <Text>Card content</Text>
     </Card.Content>
-    <Card.Cover  source={{ uri: 'https://picsum.photos/700' }} />
     <Card.Actions style={styles.iconRow} >
       <Touch  style={styles.iconRow}><Icon name={'ban'} size={25} color={'black'}/></Touch>
       <Touch  style={styles.iconRow}><Icon name={'check'} size={25} color={'black'}/></Touch>
