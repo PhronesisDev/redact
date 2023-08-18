@@ -34,7 +34,7 @@ function WorkerLogin({navigation}) {
           <View style={{backgroundColor: 'transparent', flex: 1}}></View>
           <View style={styles.buttonContainer}>
             <TextInput
-              label="Email"
+              label="Identity Number"
               value={email}
               onChangeText={text => setEmail(text)}
               style={{marginBottom: 20}}

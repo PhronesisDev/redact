@@ -19,10 +19,11 @@ function BusinessLogin({navigation}) {
   const [password, setPassword] = useState<string>('');
   const [data, setData] = useState();
 
-  const postExample = async() => {
-    try {
-      await fetch('https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/authenticate', {
-        method: 'POST', 
+  const postExample = async () =>
+    await fetch(
+      'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/authenticate',
+      {
+        method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -31,26 +32,23 @@ function BusinessLogin({navigation}) {
           registrationNo: email,
           password: password,
         }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log("Response: ",JSON.stringify(data.message));
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response: ', JSON.stringify(data.message));
 
-          console.log('data info: ', data.info)
-          if(data.message === "Successfully Logged In"){
-            navigation.navigate('Redact', {paramkey: data.info});
-            setEmail('');
-            setPassword('')
-          }
-          if(data.message === "Invalid credentials"){
-            Alert.alert("Authentication Error: ", data.message)
-          }
-         
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        const userData = data.info;
+        console.log('data info: ', data.info);
+        if (data.message === 'Successfully Logged In') {
+          navigation.navigate('Redact', data.info);
+          setEmail('');
+          setPassword('');
+        }
+        if (data.message === 'Invalid credentials') {
+          Alert.alert('Authentication Error: ', data.message);
+        }
+      });
 
   return (
     <SafeAreaView style={{flex: 1}}>

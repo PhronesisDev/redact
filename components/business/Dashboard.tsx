@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     SafeAreaView,
     ScrollView,
@@ -17,8 +17,13 @@ import HomeScreen from './HomeScreen';
 const Tab = createBottomTabNavigator();
 
 
-function Dashboard() {
+function Dashboard({route, navigation}) {
 
+
+  useEffect(()=> {
+    navigation.navigate('Candidates', route.params)
+  }, [route.params])
+ 
   return (
   
     <Tab.Navigator
