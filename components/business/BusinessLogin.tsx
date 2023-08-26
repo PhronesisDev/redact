@@ -15,11 +15,21 @@ const windowHeight = Dimensions.get('window').height;
 const image = {uri: '.'};
 
 function BusinessLogin({navigation}) {
-  const [email, setEmail] = React.useState<string>('');
+  const [registrationNo, setRegistrationNo] = React.useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [data, setData] = useState();
-
-  const postExample = async () =>
+  const registrationNoRegex = /(19|2[0-9])\d{2}\/\d{6}\/\d{2}/;
+  const handleLogin = async () => !registrationNoRegex.test(registrationNo)
+  ? Alert.alert(
+      'Invalid Registration Number',
+      'Please enter a valid registration number.',
+    )
+  : password.length < 6 || password === ''
+  ? Alert.alert(
+      'Invalid Password',
+      'Password cannot be less than 6 characters.',
+    )
+  : 
     await fetch(
       'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/authenticate',
       {
@@ -29,7 +39,7 @@ function BusinessLogin({navigation}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          registrationNo: email,
+          registrationNo: registrationNo,
           password: password,
         }),
       },
@@ -42,7 +52,7 @@ function BusinessLogin({navigation}) {
         console.log('data info: ', data.info);
         if (data.message === 'Successfully Logged In') {
           navigation.navigate('Redact', data.info);
-          setEmail('');
+          setRegistrationNo('');
           setPassword('');
         }
         if (data.message === 'Invalid credentials') {
@@ -59,8 +69,8 @@ function BusinessLogin({navigation}) {
           <View style={styles.buttonContainer}>
             <TextInput
               label="Registration Number"
-              value={email}
-              onChangeText={text => setEmail(text)}
+              value={registrationNo}
+              onChangeText={text => setRegistrationNo(text)}
               style={{marginBottom: 20}}
             />
             <TextInput
@@ -76,7 +86,7 @@ function BusinessLogin({navigation}) {
                 <Text style={{color: 'red'}}>Reset</Text>
               </Touch>
             </Text>
-            <Touch style={styles.button} onPress={postExample}>
+            <Touch style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Login</Text>
             </Touch>
             <Touch

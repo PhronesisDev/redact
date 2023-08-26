@@ -16,35 +16,41 @@ const windowHeight = Dimensions.get('window').height;
 function BusinessSignUp({navigation}) {
   const [registrationNo, setRegistrationNo] = React.useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const handleLogin = e => {
-    e.preventDefault();
-    // Handle login logic here
-  };
+  const registrationNoRegex = /(19|2[0-9])\d{2}\/\d{6}\/\d{2}/;
   const handleSignUp = async () =>
-    await fetch(
-      'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/signup',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          registrationNo: registrationNo,
-          password: password,
-        }),
-      },
-    )
-      .then(response => response.json())
-      .then(data => {
-
-        data !== null
-          ? Alert.alert('Successfully Registered!', 'Welcome to Redact!')
-          : Alert.alert(
-              'An error occurred !',
-              'An error occured while trying to sign you up :(',
-            );
-      });
+    !registrationNoRegex.test(registrationNo)
+      ? Alert.alert(
+          'Invalid Registration Number',
+          'Please enter a valid registration number.',
+        )
+      : password.length < 6 || password === ''
+      ? Alert.alert(
+          'Invalid Password',
+          'Password cannot be less than 6 characters.',
+        )
+      : await fetch(
+          'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/signup',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              registrationNo: registrationNo,
+              password: password,
+            }),
+          },
+        )
+          .then(response => response.json())
+          .then(data => {
+            data !== null
+              ? Alert.alert('Successfully Registered!', 'Welcome to Redact!')
+              : Alert.alert(
+                  'An error occurred !',
+                  'An error occured while trying to sign you up :(',
+                );
+          });
 
   return (
     <SafeAreaView style={{flex: 1}}>
