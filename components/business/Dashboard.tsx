@@ -14,15 +14,15 @@ import {
 import SettingsScreen from './SettingsScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
+import CreatePostScreen from './CreatePostScreen';
 const Tab = createBottomTabNavigator();
 
 
-function Dashboard({route, navigation}) {
-
+function Dashboard({route: parser, navigation}) {
 
   useEffect(()=> {
-    navigation.navigate('Candidates', route.params)
-  }, [route.params])
+    navigation.navigate('Candidates', parser.params)
+  }, [parser.params])
  
   return (
   
@@ -38,6 +38,9 @@ function Dashboard({route, navigation}) {
         } else if (route.name === 'SignOut') {
           iconName = focused ? 'sign-out' : 'sign-out';
           colors = focused ? 'black': 'black'
+        }else if (route.name === 'CreatePost'){
+          iconName = focused ? 'plus-square': 'plus-square-o';
+          colors = focused ? 'white': 'black'
         }
         
         return <Icon name={iconName} size={25} color={colors}/>
@@ -52,7 +55,9 @@ function Dashboard({route, navigation}) {
   
   >
      <Tab.Screen name="Candidates" component={HomeScreen} />
+     <Tab.Screen name="CreatePost" component={()=>CreatePostScreen(parser)}/>
     <Tab.Screen name="SignOut" component={SettingsScreen} />
+    
   </Tab.Navigator>
  
 
