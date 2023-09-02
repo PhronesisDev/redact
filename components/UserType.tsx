@@ -16,24 +16,24 @@ import {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const image = { uri: '.' }
-function Login({navigation}) {
-    const handleLogin = (e) => {
-        e.preventDefault();
-        // Handle login logic here
-    };
 
+type UserTypeProps = {
+    setType: (type: string )=> void
+}
+const UserType: React.FC<UserTypeProps> =({setType})=> {
+    
     return (
         <View style={styles.container}>
-            <ImageBackground  source={require('../../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
+            <ImageBackground  source={require('../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
                 <View style={{ backgroundColor: 'transparent', flex: 4 }}>
 
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Touch style={styles.button} onPress={()=> navigation.navigate('WorkerLogin')}>
-                        <Text style={styles.buttonText}>Login As Worker</Text>
+                    <Touch style={styles.button} onPress={()=> setType('individual')} >
+                        <Text style={styles.buttonText}>Login As Individual</Text>
                     </Touch>
                     <Text style={{ textAlign: 'center', fontWeight:'bold' }}>Or</Text>
-                    <Touch style={styles.alternativeButton}>
+                    <Touch style={styles.alternativeButton} onPress={()=> setType('company')}>
                         <Text style={styles.buttonText}>Login As Company</Text>
                     </Touch>
                 </View>
@@ -47,7 +47,7 @@ function Login({navigation}) {
     );
 }
 
-export default Login;
+export default UserType;
 const styles = StyleSheet.create({
     container: {
         flex: 1,

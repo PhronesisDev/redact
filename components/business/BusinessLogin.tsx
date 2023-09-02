@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -7,36 +7,70 @@ import {
   Dimensions,
   View,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/AntDesign';
-import Worker from './provider/Worker';
-import {WorkerContextArgs, createWorkerContext} from './provider/WorkerContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const image = {uri: '.'};
 
-function WorkerLogin({navigation}) {
-  const [email, setEmail] = React.useState<string>('');
+function BusinessLogin({navigation}) {
+  const [registrationNo, setRegistrationNo] = React.useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const handleLogin = e => {
-    e.preventDefault();
-    // Handle login logic here
-  };
+  const [data, setData] = useState();
+  const registrationNoRegex = /(19|2[0-9])\d{2}\/\d{6}\/\d{2}/;
+  const handleLogin = async () => registrationNoRegex.test(registrationNo)
+  ? Alert.alert(
+      'Invalid Registration Number',
+      'Please enter a valid registration number.',
+    )
+  : password.length < 6 || password === ''
+  ? Alert.alert(
+      'Invalid Password',
+      'Password cannot be less than 6 characters.',
+    )
+  : 
+    await fetch(
+      'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/authenticate',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          registrationNo: registrationNo,
+          password: password,
+        }),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        console.log('Response: ', JSON.stringify(data.message));
 
-  const context = createWorkerContext();
+        const userData = data.info;
+        console.log('data info: ', data.info);
+        if (data.message === 'Successfully Logged In') {
+          navigation.navigate('Redact', data.info);
+          setRegistrationNo('');
+          setPassword('');
+        }
+        if (data.message === 'Invalid credentials') {
+          Alert.alert('Authentication Error: ', data.message);
+        }
+      });
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         <ImageBackground
           source={require('../../images/redact-transparent.png')}
           style={{width: '100%', height: '100%'}}>
-          <View style={{backgroundColor: 'transparent', flex: 1}}></View>
           <View style={styles.buttonContainer}>
             <TextInput
-              label="Identity Number"
-              value={email}
-              onChangeText={text => setEmail(text)}
+              label="Registration Number"
+              value={registrationNo}
+              onChangeText={text => setRegistrationNo(text)}
               style={{marginBottom: 20}}
             />
             <TextInput
@@ -52,14 +86,12 @@ function WorkerLogin({navigation}) {
                 <Text style={{color: 'red'}}>Reset</Text>
               </Touch>
             </Text>
-            <Touch
-              style={styles.button}
-              onPress={() => navigation.navigate('Dashboard')}>
+            <Touch style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Login</Text>
             </Touch>
             <Touch
               style={styles.alternativeButton}
-              onPress={() => navigation.navigate('WorkerSignUp')}>
+              onPress={() => navigation.navigate('BusinessSignUp')}>
               <Text style={styles.buttonText}>Sign Up</Text>
             </Touch>
           </View>
@@ -69,13 +101,13 @@ function WorkerLogin({navigation}) {
   );
 }
 
-export default WorkerLogin;
+export default BusinessLogin;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 10,
-    backgroundColor: '#219DBF',
+    backgroundColor: '#730360',
   },
   button: {
     alignItems: 'center',

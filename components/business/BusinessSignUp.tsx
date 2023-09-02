@@ -7,60 +7,73 @@ import {
   Dimensions,
   View,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/AntDesign';
-import Worker from './provider/Worker';
-import {WorkerContextArgs, createWorkerContext} from './provider/WorkerContext';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const image = {uri: '.'};
-
-function WorkerLogin({navigation}) {
-  const [email, setEmail] = React.useState<string>('');
+function BusinessSignUp({navigation}) {
+  const [registrationNo, setRegistrationNo] = React.useState<string>('');
   const [password, setPassword] = useState<string>('');
   const handleLogin = e => {
     e.preventDefault();
     // Handle login logic here
   };
+  const handleSignUp = async () =>
+    await fetch(
+      'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/signup',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          registrationNo: registrationNo,
+          password: password,
+        }),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
 
-  const context = createWorkerContext();
+        data !== null
+          ? Alert.alert('Successfully Registered!', 'Welcome to Redact!')
+          : Alert.alert(
+              'An error occurred !',
+              'An error occured while trying to sign you up :(',
+            );
+      });
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         <ImageBackground
           source={require('../../images/redact-transparent.png')}
           style={{width: '100%', height: '100%'}}>
-          <View style={{backgroundColor: 'transparent', flex: 1}}></View>
           <View style={styles.buttonContainer}>
             <TextInput
-              label="Identity Number"
-              value={email}
-              onChangeText={text => setEmail(text)}
-              style={{marginBottom: 20}}
+              label="Registration Number"
+              value={registrationNo}
+              onChangeText={text => setRegistrationNo(text)}
+              style={{marginBottom: 5}}
             />
             <TextInput
               label="Password"
               value={password}
-              secureTextEntry
               onChangeText={text => setPassword(text)}
-              style={{marginBottom: 20}}
+              style={{marginBottom: 5}}
             />
-            <Text>
-              Forgot Password?{' '}
-              <Touch style={{marginTop: 1}}>
-                <Text style={{color: 'red'}}>Reset</Text>
-              </Touch>
-            </Text>
-            <Touch
-              style={styles.button}
-              onPress={() => navigation.navigate('Dashboard')}>
-              <Text style={styles.buttonText}>Login</Text>
+            <Touch style={styles.button}>
+              <Text style={styles.buttonText} onPress={() => handleSignUp()}>
+                Submit
+              </Text>
             </Touch>
             <Touch
               style={styles.alternativeButton}
-              onPress={() => navigation.navigate('WorkerSignUp')}>
-              <Text style={styles.buttonText}>Sign Up</Text>
+              onPress={() => navigation.navigate('BusinessLogin')}>
+              <Text style={styles.buttonText}>Back</Text>
             </Touch>
           </View>
         </ImageBackground>
@@ -69,13 +82,15 @@ function WorkerLogin({navigation}) {
   );
 }
 
-export default WorkerLogin;
+export default BusinessSignUp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 10,
-    backgroundColor: '#219DBF',
+    backgroundColor: '#730360',
+    width: windowWidth,
+    height: windowHeight,
   },
   button: {
     alignItems: 'center',

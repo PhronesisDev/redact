@@ -1,44 +1,38 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, {useState} from 'react';
-import type {PropsWithChildren} from 'react';
-import {StyleSheet, useColorScheme} from 'react-native';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
-import Login from './components/Worker/Login';
-import Signup from './components/SignUp';
-import Dashboard from './components/Worker/Dashboard';
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {NavigationContainer} from '@react-navigation/native';
+import {StyleSheet, useColorScheme,Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import WorkerLogin from './components/Worker/WorkerLogin';
-import WorkerSignUp from './components/Worker/WorkerSignUp';
+import WorkerStack from './components/worker/WorkerStack';
+import UserType from './components/UserType';
+import BusinessStack from './components/business/BusinessStack';
+import Dashboard from './components/business/Dashboard';
 
-
+type StackProps ={
+  type: string,
+  setType: (type: string)=> void;
+}
 
 function App(): JSX.Element {
 
+  const [type, setType] = useState<string>('');
   const Stack = createNativeStackNavigator();
+
+  const stackDisplay: React.FC<StackProps> = ({type, setType})=>{
+    if(type === ''){
+      return <UserType setType={setType}/>
+    }
+    if(type === 'individual'){
+      return <WorkerStack/>
+    }
+    if(type === 'company'){
+      return<BusinessStack/> 
+    }
+  }
   return (
-    
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="WorkerLogin" component={WorkerLogin} />
-          <Stack.Screen name="WorkerSignUp" component={WorkerSignUp} />
-          <Stack.Screen name="Dashboard" component={Dashboard} />
-        </Stack.Navigator>
-      </NavigationContainer>
+   <>
+    {stackDisplay({type, setType})}
+    {/* <Dashboard/> */}
+   </>
+   
   
   );
 }
