@@ -8,49 +8,57 @@ import {
   ActivityIndicator,
   ImageBackground,
   Text,
+  Modal,
+  View,
+  Pressable,
 } from 'react-native';
 import {Avatar, Button, Card, MD2Colors, Tooltip} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const HomeScreen = ({route}) => {
   const LeftContent = (avatar: string) => <Avatar.Icon icon={avatar} />;
   const [posts, setPosts] = useState([]);
-
+  const [modalVisibility, setModalVisibility] = useState<boolean>(false)
+  console.log(route.params);
   const backHandler = BackHandler.addEventListener(
     'hardwareBackPress',
     () => true,
   );
-  const getPosts = async ()=> await   fetch(
-    `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?reference=${route.params?.registrationNo}`,
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+  const getPosts = async () =>
+    await fetch(
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?reference=${route.params?.registrationNo}`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       },
-    },
-  )
-    .then(response => response.json())
-    .then(data => setPosts(data.jobPosts))
-    .catch(error => console.error(error));
+    )
+      .then(response => response.json())
+      .then(data => setPosts(data.jobPosts))
+      .catch(error => console.error(error));
   useEffect(() => {
-    getPosts()
+    getPosts();
   }, [route.params?.registrationNo, posts]);
 
   console.log('posts: ', posts);
-  const deletePost = async (id: string)=> {
-   return await  fetch(`https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${id}`,
-    {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+  const deletePost = async (id: string) => {
+    return await fetch(
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${id}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
       },
-    },
-  ).then(()=> Alert.alert('Success!', 'Post Successfully deleted!'))
-    .catch(() => Alert.alert('Error!', 'An error occurred while trying to delete post.'));
-  }
+    )
+      .then(() => Alert.alert('Success!', 'Post Successfully deleted!'))
+      .catch(() =>
+        Alert.alert('Error!', 'An error occurred while trying to delete post.'),
+      );
+  };
 
-    
   return (
     <ScrollView style={styles.container}>
       <ImageBackground
@@ -67,11 +75,7 @@ const HomeScreen = ({route}) => {
               <Card.Actions style={styles.iconRow}>
                 <Tooltip title="Send Offer">
                   <Touch
-                    onPress={() =>
-                      deletePost(post._id)
-                    
-                      
-                    }
+                    onPress={() => deletePost(post._id)}
                     style={styles.iconRow}>
                     <Icon name={'trash'} size={25} color={'black'} />
                   </Touch>
@@ -120,17 +124,36 @@ const HomeScreen = ({route}) => {
                       </Touch>
                       <Tooltip title="Send Offer">
                         <Touch
-                          onPress={() =>
+                          onPress={() => {setModalVisibility(true)
                             Alert.alert(
                               'Email sent!',
                               'Successfully sent email!',
                             )
-                          }
+                          }}
                           style={styles.iconRow}>
                           <Icon name={'envelope-o'} size={25} color={'black'} />
                         </Touch>
                       </Tooltip>
                     </Card.Actions>
+                    <Modal
+                      animationType="slide"
+                      transparent={true}
+                      visible={modalVisibility}
+                      onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setModalVisibility(!modalVisibility);
+                      }}>
+                      <View>
+                        <View>
+                          <Text>Hello World!</Text>
+                          <Pressable
+                            
+                            onPress={() => setModalVisibility(!modalVisibility)}>
+                            <Text>Close</Text>
+                          </Pressable>
+                        </View>
+                      </View>
+                    </Modal>
                   </Card>
                 ))}
               </ScrollView>

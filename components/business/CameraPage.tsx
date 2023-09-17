@@ -1,0 +1,103 @@
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity as Pressable,
+  PermissionsAndroid,
+  Button,
+} from 'react-native';
+import {Camera} from 'react-native-vision-camera';
+import {CONTENT_SPACING, MAX_ZOOM_FACTOR, SAFE_AREA_PADDING} from './Constants';
+import React, {useCallback, useEffect} from 'react';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import ReactNativeBlobUtil from 'react-native-blob-util';
+const SCALE_FULL_ZOOM = 3;
+const BUTTON_SIZE = 40;
+
+
+export function CameraPage({navigation, route}): React.ReactElement {
+  const [imageSource, setImageSource] = React.useState('test-bucket');
+
+  console.log("route data: ", route.params)
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission',
+          message: 'App needs access to your camera to take pictures.',
+          buttonPositive: 'OK',
+          buttonNegative: 'Cancel',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Camera permission granted');
+        openCamera();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const openCamera = () => {
+    const options = {
+      maxHeight: 250,
+      maxWidth: 350,
+      mediaType:'images',
+      includeBase64: true
+    };
+
+    launchImageLibrary(options, response => {
+      try {
+        // createBucket()
+        console.log("data: ",response.assets[0].base64)
+        const imageUri = response?.assets[0]?.uri;
+        // Convert the image data to base64
+
+       
+    
+
+        fetch(
+          'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/facialrecognition',
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              idNo: route.params.registrationNo,
+              data:response.assets[0].base64
+            }),
+          }
+        )
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse the JSON response
+          })
+          .then(data => {
+            console.log('Response:', data); // Handle the response data here
+            const confidence = data.data
+            confidence > 70 ? navigation.navigate('Redact', route.params ): null;
+          })
+          .catch(err => {
+            console.log('Error:', err);
+          });
+        
+      } catch (err) {
+        console.log('ImagePicker Error: ', err);
+      }
+    });
+  };
+
+  return (
+    <View>
+      <Button title="Open Camera" onPress={requestCameraPermission} />
+      {/* <Button color="#68a0cf" title="Create Bucket" onPress={createBucket} /> */}
+    </View>
+  );
+}
