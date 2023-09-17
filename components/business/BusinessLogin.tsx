@@ -51,7 +51,7 @@ function BusinessLogin({navigation}) {
         const userData = data.info;
         console.log('data info: ', data.info);
         if (data.message === 'Successfully Logged In') {
-          navigation.navigate('Redact', data.info);
+          navigation.navigate('PermissionsPage', data.info);
           setRegistrationNo('');
           setPassword('');
         }
@@ -108,6 +108,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     backgroundColor: '#730360',
+    width: windowWidth,
+    height: windowHeight
   },
   button: {
     alignItems: 'center',

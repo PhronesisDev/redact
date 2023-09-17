@@ -1,16 +1,6 @@
 import React, { useEffect } from 'react';
-import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    Button,
-    View,
-  } from 'react-native';
-  import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-  import Icon from 'react-native-vector-icons/FontAwesome';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import SettingsScreen from './SettingsScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
@@ -19,7 +9,7 @@ const Tab = createBottomTabNavigator();
 
 
 function Dashboard({route: parser, navigation}) {
-
+console.log('parser: ', parser)
   useEffect(()=> {
     navigation.navigate('Candidates', parser.params)
   }, [parser.params])

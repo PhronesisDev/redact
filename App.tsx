@@ -5,6 +5,7 @@ import WorkerStack from './components/worker/WorkerStack';
 import UserType from './components/UserType';
 import BusinessStack from './components/business/BusinessStack';
 import Dashboard from './components/business/Dashboard';
+import RecognitionScreen from './components/business/RecognitionScreen';
 
 type StackProps ={
   type: string,
@@ -16,7 +17,7 @@ function App(): JSX.Element {
   const [type, setType] = useState<string>('');
   const Stack = createNativeStackNavigator();
 
-  const stackDisplay: React.FC<StackProps> = ({type, setType})=>{
+  const stackDisplay = ({type, setType})=>{
     if(type === ''){
       return <UserType setType={setType}/>
     }
@@ -25,6 +26,7 @@ function App(): JSX.Element {
     }
     if(type === 'company'){
       return<BusinessStack/> 
+    
     }
   }
   return (
