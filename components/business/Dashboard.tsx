@@ -5,6 +5,7 @@ import SettingsScreen from './SettingsScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
 import CreatePostScreen from './CreatePostScreen';
+import { ProfileScreen } from './ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 
@@ -18,7 +19,7 @@ console.log('parser: ', parser)
   
     <Tab.Navigator
     screenOptions={({ route }) => ({
-    
+  
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
         let colors
@@ -31,6 +32,10 @@ console.log('parser: ', parser)
         }else if (route.name === 'CreatePost'){
           iconName = focused ? 'plus-square': 'plus-square-o';
           colors = focused ? 'white': 'black'
+        }else if (route.name ===  "Profile"){
+          iconName=focused?'id-card':'address-book-o';
+          // navigation.navigate('Profile', parser)
+          colors = focused ? 'white': 'black'
         }
         
         return <Icon name={iconName} size={25} color={colors}/>
@@ -38,7 +43,8 @@ console.log('parser: ', parser)
       tabBarActiveBackgroundColor: '#730360',
       tabBarInactiveBackgroundColor: 'white',
       headerShown: false,
-      tabBarLabelStyle:{color:'white'}
+      tabBarLabelStyle:{color:'white'},
+    
     })}
 
   
@@ -46,7 +52,9 @@ console.log('parser: ', parser)
   >
      <Tab.Screen name="Candidates" component={HomeScreen} />
      <Tab.Screen name="CreatePost" component={()=>CreatePostScreen(parser)}/>
+     <Tab.Screen name = "Profile"  component={()=><ProfileScreen route={parser} navigation={navigation}/>}/>
     <Tab.Screen name="SignOut" component={SettingsScreen} />
+    
     
   </Tab.Navigator>
  

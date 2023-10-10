@@ -1,12 +1,10 @@
 import {
-  StyleSheet,
-  Text,
   View,
   TouchableOpacity as Pressable,
   PermissionsAndroid,
   Button,
+  Alert,
 } from 'react-native';
-import {Camera} from 'react-native-vision-camera';
 import {CONTENT_SPACING, MAX_ZOOM_FACTOR, SAFE_AREA_PADDING} from './Constants';
 import React, {useCallback, useEffect} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
@@ -75,14 +73,14 @@ export function CameraPage({navigation, route}): React.ReactElement {
         )
           .then(response => {
             if (!response.ok) {
-              throw new Error('Network response was not ok');
+              Alert.alert("Authentication Failed", 'Failed to authenticate!');
             }
             return response.json(); // Parse the JSON response
           })
           .then(data => {
             console.log('Response:', data); // Handle the response data here
             const confidence = data.data
-            confidence > 70 ? navigation.navigate('Redact', route.params ): null;
+            confidence > 70 ? navigation.navigate('Redact', route.params ): Alert.alert("Authentication Failed", 'Failed to authenticate!');
           })
           .catch(err => {
             console.log('Error:', err);
