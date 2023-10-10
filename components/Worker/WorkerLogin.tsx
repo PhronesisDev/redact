@@ -7,6 +7,7 @@ import {
   Dimensions,
   View,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -17,14 +18,37 @@ const windowHeight = Dimensions.get('window').height;
 const image = {uri: '.'};
 
 function WorkerLogin({navigation}) {
-  const [email, setEmail] = React.useState<string>('');
+  const [identityNumber, setIdentityNumber] = React.useState<string>('');
   const [password, setPassword] = useState<string>('');
   const handleLogin = e => {
     e.preventDefault();
     // Handle login logic here
   };
-
-  const context = createWorkerContext();
+  const workerLogin = async () =>
+    await fetch(
+      'https://pl1s3odbbi.execute-api.us-east-1.amazonaws.com/prod/worker-authenticate',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identityNo: identityNumber,
+          password: password,
+        }),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        data.message === 'Successfully Logged In'
+          ? navigation.navigate('PermissionsPage', data.info)
+          : Alert.alert(
+              'Error!',
+              'An error occurred while trying to authenticate',
+            );
+      });
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
@@ -35,8 +59,8 @@ function WorkerLogin({navigation}) {
           <View style={styles.buttonContainer}>
             <TextInput
               label="Identity Number"
-              value={email}
-              onChangeText={text => setEmail(text)}
+              value={identityNumber}
+              onChangeText={text => setIdentityNumber(text)}
               style={{marginBottom: 20}}
             />
             <TextInput
@@ -52,9 +76,7 @@ function WorkerLogin({navigation}) {
                 <Text style={{color: 'red'}}>Reset</Text>
               </Touch>
             </Text>
-            <Touch
-              style={styles.button}
-              onPress={() => navigation.navigate('Dashboard')}>
+            <Touch style={styles.button} onPress={() => workerLogin()}>
               <Text style={styles.buttonText}>Login</Text>
             </Touch>
             <Touch
@@ -76,6 +98,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
     backgroundColor: '#219DBF',
+    width: windowWidth,
+    height: windowHeight,
   },
   button: {
     alignItems: 'center',

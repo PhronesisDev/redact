@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   StyleSheet,
   TouchableOpacity as Touch,
@@ -9,16 +9,33 @@ import {
   ImageBackground,
   Text,
   Modal,
+  Linking,
   View,
   Pressable,
 } from 'react-native';
-import {Avatar, Button, Card, MD2Colors, Tooltip} from 'react-native-paper';
+import {
+  Avatar,
+  Button,
+  Card,
+  MD2Colors,
+  Tooltip,
+  TextInput,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  Redact_Business_Applications,
+  Redact_Business_Data,
+  Redact_Reports,
+} from '../types';
+
 const HomeScreen = ({route}) => {
   const LeftContent = (avatar: string) => <Avatar.Icon icon={avatar} />;
-  const [posts, setPosts] = useState([]);
-  const [modalVisibility, setModalVisibility] = useState<boolean>(false)
-  console.log(route.params);
+  const [posts, setPosts] = useState<Redact_Business_Data[]>([]);
+  const [modalVisibility, setModalVisibility] = useState<boolean>(false);
+  const [from, setFrom] = useState<string>();
+  const [to, setTo] = useState<string>();
+  const [message, setMessage] = useState<string>();
+
   const backHandler = BackHandler.addEventListener(
     'hardwareBackPress',
     () => true,
@@ -41,7 +58,6 @@ const HomeScreen = ({route}) => {
     getPosts();
   }, [route.params?.registrationNo, posts]);
 
-  console.log('posts: ', posts);
   const deletePost = async (id: string) => {
     return await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${id}`,
@@ -59,6 +75,96 @@ const HomeScreen = ({route}) => {
       );
   };
 
+  const sendMail = async () =>
+    await fetch(
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/sendmail`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sender: from,
+          receiver: to,
+          message: message,
+        }),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        Alert.alert('Email Sent Successfully', `${data.message}!`);
+        setFrom('');
+        setTo('');
+        setMessage('');
+      })
+      .catch(error => console.error(error));
+
+  const report = async (body: Redact_Reports) =>
+    await fetch(
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/reports`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        console.log('reports: ', data);
+        Alert.alert('Successfully Reported!', `User successfully reported!`);
+      })
+      .catch(error => console.error(error));
+
+  const removeUserFromPost = async (
+    applicant: Redact_Business_Applications,
+    post,
+  ) => {
+    const newApplicantsList =
+      post?.applicants?.filter(user => user !== applicant) ?? [];
+    console.log(' new applicants: ', newApplicantsList);
+    await fetch(
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${post._id}`,
+      {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: post.title,
+          description: post.description,
+          company: route.params,
+          applicants: newApplicantsList,
+          reference: route.params.registrationNo,
+        }),
+      },
+    )
+      .then(response => response.json())
+      .then(data => {
+        Alert.alert('Removed!', 'Successfully removed candidate!');
+        console.log(data);
+      })
+      .catch(err => console.log(err));
+  };
+  const OpenURLButton = (url: string) => {
+    const handlePress = async () => {
+      // Checking if the link is supported for links with custom URL scheme.
+     
+        // Opening the link with some app, if the URL scheme is "http" the web link should be opened
+        // by some browser in the mobile
+        if(!url){
+          Alert.alert("Error!", "Error occurred while trying to view Document")
+        }
+        await Linking.openURL(url);
+      
+    }
+    
+    handlePress();
+  }
   return (
     <ScrollView style={styles.container}>
       <ImageBackground
@@ -82,53 +188,48 @@ const HomeScreen = ({route}) => {
                 </Tooltip>
               </Card.Actions>
               <ScrollView>
-                {post.applicants?.map(applicant => (
-                  <Card style={styles.card}>
+                {post.applicants?.map((applicant, index) => {
+                  console.log("applicant: ", applicant)
+                  return(
+                  <Card style={styles.card} key={index}>
                     <Card.Title
-                      title={applicant.name}
+                      title={applicant.username}
                       subtitle={applicant.status}
                       left={props => (
                         <Avatar.Icon {...props} icon={applicant.avatar} />
                       )}
                     />
                     <Card.Actions style={styles.iconRow}>
+                    <Touch onPress={()=> OpenURLButton(applicant?.file)}>
+                        <Text>View CV</Text>
+                      </Touch>
                       <Touch
                         onPress={() =>
-                          Alert.alert(
-                            'Report!',
-                            'Successfully Reported candidate!',
-                          )
+                          report({
+                            name: applicant.username,
+                            surname: applicant.surname,
+                            avatar: applicant.avatar,
+                            status: applicant.status,
+                            reference: route.params.registrationNo,
+                            postId: post._id,
+                            companyName: route.params?.companyName,
+                            identityNo: applicant.identityNo
+                          })
                         }
                         style={styles.iconRow}>
                         <Icon name={'ban'} size={25} color={'black'} />
                       </Touch>
                       <Touch
-                        onPress={() =>
-                          Alert.alert(
-                            'Approved!',
-                            'Successfully Approved candidate!',
-                          )
-                        }
-                        style={styles.iconRow}>
-                        <Icon name={'check'} size={25} color={'black'} />
-                      </Touch>
-                      <Touch
-                        onPress={() =>
-                          Alert.alert(
-                            'Removed!',
-                            'Successfully removed candidate!',
-                          )
-                        }
+                        onPress={() => {
+                          removeUserFromPost(applicant, post);
+                        }}
                         style={styles.iconRow}>
                         <Icon name={'times'} size={25} color={'black'} />
                       </Touch>
                       <Tooltip title="Send Offer">
                         <Touch
-                          onPress={() => {setModalVisibility(true)
-                            Alert.alert(
-                              'Email sent!',
-                              'Successfully sent email!',
-                            )
+                          onPress={() => {
+                            setModalVisibility(true);
                           }}
                           style={styles.iconRow}>
                           <Icon name={'envelope-o'} size={25} color={'black'} />
@@ -140,22 +241,72 @@ const HomeScreen = ({route}) => {
                       transparent={true}
                       visible={modalVisibility}
                       onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
                         setModalVisibility(!modalVisibility);
                       }}>
-                      <View>
-                        <View>
-                          <Text>Hello World!</Text>
-                          <Pressable
-                            
-                            onPress={() => setModalVisibility(!modalVisibility)}>
-                            <Text>Close</Text>
-                          </Pressable>
-                        </View>
+                      <View style={{flex: 3}}>
+                        <Card style={{marginTop: 30, padding: 6}}>
+                          <View>
+                            <TextInput
+                              style={{
+                                margin: 3,
+                                borderStyle: 'solid',
+                                borderColor: 'gray',
+                                borderWidth: 1,
+                                backgroundColor: 'white',
+                              }}
+                              label={'From:'}
+                              placeholder="From:"
+                              value={from}
+                              onChangeText={text => setFrom(text)}
+                            />
+                            <TextInput
+                              style={{
+                                margin: 3,
+                                borderStyle: 'solid',
+                                borderColor: 'gray',
+                                borderWidth: 1,
+                                backgroundColor: 'white',
+                              }}
+                              label={'To:'}
+                              placeholder="To:"
+                              value={to}
+                              onChangeText={text => setTo(text)}
+                            />
+                            <TextInput
+                              style={{
+                                margin: 3,
+                                borderStyle: 'solid',
+                                borderColor: 'black',
+                                borderWidth: 1,
+                                backgroundColor: 'white',
+                                height: 250,
+                              }}
+                              label={'Message'}
+                              multiline={true}
+                              placeholder="Enter your message here..."
+                              value={message}
+                              onChangeText={text => {
+                                setMessage(text);
+                              }}
+                            />
+                            <Touch onPress={() => sendMail()}>
+                              <Button style={styles.buttonSave}>
+                                <Text style={styles.buttonText}>Save</Text>
+                              </Button>
+                            </Touch>
+                            <Touch>
+                              <Button
+                                onPress={() => setModalVisibility(false)}
+                                style={styles.alternativeButton}>
+                                <Text style={styles.buttonText}>Close</Text>
+                              </Button>
+                            </Touch>
+                          </View>
+                        </Card>
                       </View>
                     </Modal>
                   </Card>
-                ))}
+                )})}
               </ScrollView>
             </Card>
           ))
@@ -202,6 +353,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonSave: {
+    alignItems: 'center',
+    backgroundColor: '#024873',
+    color: 'white',
+    padding: 10,
+    width: '100%',
+    marginBottom: 10,
+    borderRadius: 2,
+  },
+  alternativeButton: {
+    alignItems: 'center',
+    borderWidth: 1,
+    backgroundColor: 'black',
+    borderColor: 'black',
+    borderStyle: 'solid',
+    padding: 10,
+    width: '100%',
+    marginBottom: 10,
+    marginTop: 10,
+    borderRadius: 2,
   },
 });
 
