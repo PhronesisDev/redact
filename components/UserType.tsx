@@ -24,11 +24,11 @@ const UserType: React.FC<UserTypeProps> =({setType})=> {
     
     return (
         <View style={styles.container}>
-            <ImageBackground  source={require('../images/redact-transparent.png')} style={{width:'100%', height:'100%'}}>
+            <ImageBackground  source={require('../images/redact-transparent.png')} style={{padding:5, width:320, height:320}}>
                 <View style={{ backgroundColor: 'transparent', flex: 4 }}>
 
                 </View>
-                <View style={styles.buttonContainer}>
+              
                     <Touch style={styles.button} onPress={()=> setType('individual')} >
                         <Text style={styles.buttonText}>Login As Individual</Text>
                     </Touch>
@@ -36,7 +36,8 @@ const UserType: React.FC<UserTypeProps> =({setType})=> {
                     <Touch style={styles.alternativeButton} onPress={()=> setType('company')}>
                         <Text style={styles.buttonText}>Login As Company</Text>
                     </Touch>
-                </View>
+               
+               
             </ImageBackground>
 
 
@@ -68,7 +69,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#049DBF',
         padding: 10,
         width: '100%',
+        marginLeft:10,
         marginBottom: 10,
+        borderColor:"white",
         marginTop: 10
     },
     buttonText: {
