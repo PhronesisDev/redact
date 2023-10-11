@@ -2,13 +2,13 @@
 import { Camera, CameraPermissionStatus } from 'react-native-vision-camera';
 import { StyleSheet, View, Text, Image , ImageRequireSource, Linking } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { CONTENT_SPACING, SAFE_AREA_PADDING } from './Constants';
+import { CONTENT_SPACING, SAFE_AREA_PADDING } from '../business/Constants';
 
 
-// const BANNER_IMAGE = require('./img/11.png') as ImageRequireSource;
-export function PermissionsPage({ navigation, route }): React.ReactElement {
-  const [cameraPermissionStatus, setCameraPermissionStatus] = useState<CameraPermissionStatus>('not-determined');
-  const [microphonePermissionStatus, setMicrophonePermissionStatus] = useState<CameraPermissionStatus>('not-determined');
+
+export function PermissionsPage({ navigation, route }){
+  const [cameraPermissionStatus, setCameraPermissionStatus] = useState('not-determined');
+  const [microphonePermissionStatus, setMicrophonePermissionStatus] = useState('not-determined');
 
   console.log(route)
 
@@ -34,7 +34,7 @@ export function PermissionsPage({ navigation, route }): React.ReactElement {
         {cameraPermissionStatus !== 'granted' && (
           <Text style={styles.permissionText}>
             Redact Needs <Text style={styles.bold}>Camera permission</Text>.{' '}
-            <Text style={styles.hyperlink} onPress={requestCameraPermission}>
+            <Text style={styles.hyperlink} onPress={()=>requestCameraPermission()}>
               Grant
             </Text>
           </Text>

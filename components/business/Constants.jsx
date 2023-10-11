@@ -19,10 +19,10 @@ export const SAFE_AREA_PADDING = {
 export const MAX_ZOOM_FACTOR = 20;
 
 export const SCREEN_WIDTH = Dimensions.get('window').width;
-export const SCREEN_HEIGHT = Platform.select<number>({
+export const SCREEN_HEIGHT = Platform.select({
   android: Dimensions.get('screen').height - StaticSafeAreaInsets.safeAreaInsetsBottom,
   ios: Dimensions.get('window').height,
-}) as number;
+}) 
 
 // Capture Button
 export const CAPTURE_BUTTON_SIZE = 78;

@@ -6,8 +6,7 @@ import {
     TouchableOpacity as Touch,
     Dimensions,
     View,
-    ImageBackground,
-    Alert,
+    
   } from 'react-native';
 
 const Candidate = ()=>{

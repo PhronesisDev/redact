@@ -4,11 +4,10 @@ import React from 'react';
 import WorkerLogin from './WorkerLogin';
 import WorkerSignUp from './WorkerSignUp';
 import Dashboard from './Dashboard';
-import { CameraPage } from './CameraPage';
 import { PermissionsPage } from './PermissionsPage';
-
+import { CameraPage } from './CameraPage';
 const Stack = createNativeStackNavigator();
-const WorkerStack: React.FC =  ()=>(
+const WorkerStack =  ()=>(
     <NavigationContainer>
         <Stack.Navigator
           screenOptions={{

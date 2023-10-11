@@ -5,15 +5,12 @@ import {
   Button,
   Alert,
 } from 'react-native';
-import {CONTENT_SPACING, MAX_ZOOM_FACTOR, SAFE_AREA_PADDING} from './Constants';
-import React, {useCallback, useEffect} from 'react';
+import React from "react";
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ReactNativeBlobUtil from 'react-native-blob-util';
-const SCALE_FULL_ZOOM = 3;
-const BUTTON_SIZE = 40;
 
 
-export function CameraPage({navigation, route}): React.ReactElement {
+
+export function CameraPage({navigation, route}){
   const [imageSource, setImageSource] = React.useState('test-bucket');
 
   console.log("route data: ", route.params)

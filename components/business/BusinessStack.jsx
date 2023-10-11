@@ -11,7 +11,7 @@ import HomeScreen from './HomeScreen';
 import { ProfileScreen } from './ProfileScreen';
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
-const BusinessStack: React.FC = () => (
+const BusinessStack = () => (
   <NavigationContainer>
     <Stack.Navigator
       screenOptions={{

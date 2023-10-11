@@ -2,7 +2,7 @@ import { VisionCameraProxy, Frame } from 'react-native-vision-camera';
 
 const plugin = VisionCameraProxy.getFrameProcessorPlugin('example_plugin');
 
-export function examplePlugin(frame: Frame): string[] {
+export function examplePlugin(frame){
   
 
   if (plugin == null) throw new Error('Failed to load Frame Processor Plugin "example_plugin"!');
@@ -13,5 +13,5 @@ export function examplePlugin(frame: Frame): string[] {
     someNumber: 42,
     someObject: { test: 0, second: 'test' },
     someArray: ['another test', 5],
-  }) as string[];
+  });
 }

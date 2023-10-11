@@ -16,8 +16,8 @@ const windowHeight = Dimensions.get('window').height;
 const image = {uri: '.'};
 
 function BusinessLogin({navigation}) {
-  const [registrationNo, setRegistrationNo] = React.useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [registrationNo, setRegistrationNo] = React.useState('');
+  const [password, setPassword] = useState('');
   const [data, setData] = useState();
   const registrationNoRegex = /(19|2[0-9])\d{2}\/\d{6}\/\d{2}/;
   const handleLogin = async () =>

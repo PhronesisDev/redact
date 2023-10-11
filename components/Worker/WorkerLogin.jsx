@@ -10,16 +10,13 @@ import {
   Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/AntDesign';
-import Worker from './provider/Worker';
-import {WorkerContextArgs, createWorkerContext} from './provider/WorkerContext';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const image = {uri: '.'};
 
 function WorkerLogin({navigation}) {
-  const [identityNumber, setIdentityNumber] = React.useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [identityNumber, setIdentityNumber] = React.useState('');
+  const [password, setPassword] = useState('');
   const handleLogin = e => {
     e.preventDefault();
     // Handle login logic here

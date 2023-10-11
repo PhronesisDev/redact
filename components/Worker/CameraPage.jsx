@@ -10,7 +10,7 @@ import {
   import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
   
   
-  export function CameraPage({navigation, route}): React.ReactElement {
+  export function CameraPage({navigation, route}) {
 
   
     console.log("route data: ", route.params)
@@ -44,17 +44,17 @@ import {
         includeBase64: true
       };
   
-      launchImageLibrary(options, response => {
-        try {
+      launchImageLibrary(options, async(response) => {
+     
           // createBucket()
-          console.log("data: ",response.assets[0].base64)
+          console.log("data: ",response?.assets[0]?.base64)
           const imageUri = response?.assets[0]?.uri;
           // Convert the image data to base64
   
          
       
   
-          fetch(
+         await fetch(
             'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/facialrecognition',
             {
               method: 'POST',
@@ -63,8 +63,8 @@ import {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                idNo: route.params.identityNo,
-                data:response.assets[0].base64
+                idNo: route?.params?.identityNo,
+                data:response?.assets[0]?.base64
               }),
             }
           )
@@ -83,15 +83,13 @@ import {
               console.log('Error:', err);
             });
           
-        } catch (err) {
-          console.log('ImagePicker Error: ', err);
-        }
+       
       });
     };
   
     return (
       <View>
-        <Button title="Open Camera" onPress={requestCameraPermission} />
+        <Button title="Open Camera" onPress={()=>requestCameraPermission()} />
         {/* <Button color="#68a0cf" title="Create Bucket" onPress={createBucket} /> */}
       </View>
     );

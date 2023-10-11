@@ -1,20 +1,13 @@
 import React, {useState} from 'react';
-import {StyleSheet, useColorScheme,Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import WorkerStack from './components/worker/WorkerStack';
+import WorkerStack from './components/Worker/WorkerStack';
 import UserType from './components/UserType';
 import BusinessStack from './components/business/BusinessStack';
-import Dashboard from './components/business/Dashboard';
-import RecognitionScreen from './components/business/RecognitionScreen';
 
-type StackProps ={
-  type: string,
-  setType: (type: string)=> void;
-}
+function App() {
 
-function App(): JSX.Element {
-
-  const [type, setType] = useState<string>('');
+  const [type, setType] = useState('');
   const Stack = createNativeStackNavigator();
 
   const stackDisplay = ({type, setType})=>{

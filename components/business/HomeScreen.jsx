@@ -29,12 +29,12 @@ import {
 } from '../types';
 
 const HomeScreen = ({route}) => {
-  const LeftContent = (avatar: string) => <Avatar.Icon icon={avatar} />;
-  const [posts, setPosts] = useState<Redact_Business_Data[]>([]);
-  const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-  const [from, setFrom] = useState<string>();
-  const [to, setTo] = useState<string>();
-  const [message, setMessage] = useState<string>();
+  const LeftContent = (avatar) => <Avatar.Icon icon={avatar} />;
+  const [posts, setPosts] = useState([]);
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+  const [message, setMessage] = useState();
 
   const backHandler = BackHandler.addEventListener(
     'hardwareBackPress',
@@ -58,7 +58,7 @@ const HomeScreen = ({route}) => {
     getPosts();
   }, [route.params?.registrationNo, posts]);
 
-  const deletePost = async (id: string) => {
+  const deletePost = async (id) => {
     return await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${id}`,
       {
@@ -100,7 +100,7 @@ const HomeScreen = ({route}) => {
       })
       .catch(error => console.error(error));
 
-  const report = async (body: Redact_Reports) =>
+  const report = async (body) =>
     await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/reports`,
       {
@@ -120,7 +120,7 @@ const HomeScreen = ({route}) => {
       .catch(error => console.error(error));
 
   const removeUserFromPost = async (
-    applicant: Redact_Business_Applications,
+    applicant,
     post,
   ) => {
     const newApplicantsList =
@@ -150,7 +150,7 @@ const HomeScreen = ({route}) => {
       })
       .catch(err => console.log(err));
   };
-  const OpenURLButton = (url: string) => {
+  const OpenURLButton = (url) => {
     const handlePress = async () => {
       // Checking if the link is supported for links with custom URL scheme.
      

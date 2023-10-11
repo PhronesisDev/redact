@@ -14,10 +14,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-type createPostScreenProps = {
-  data: any;
-};
-const CreatePostScreen: React.FC<createPostScreenProps> = data => {
+ 
+const CreatePostScreen = data => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
 

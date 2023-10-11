@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/colorPrimary"/> <!-- Reference the color resource here -->
+    <!-- Add other drawable items or shapes as needed -->
+</layer-list>

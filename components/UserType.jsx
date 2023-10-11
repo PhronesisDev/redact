@@ -17,10 +17,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const image = { uri: '.' }
 
-type UserTypeProps = {
-    setType: (type: string )=> void
-}
-const UserType: React.FC<UserTypeProps> =({setType})=> {
+
+const UserType=({setType})=> {
     
     return (
         <View style={styles.container}>

@@ -28,13 +28,13 @@ import {
 } from '../types';
 
 const HomeScreen = ({route}) => {
-  const LeftContent = (avatar: string) => <Avatar.Icon icon={avatar} />;
-  const [posts, setPosts] = useState<Redact_Business_Data[]>([]);
-  const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-  const [from, setFrom] = useState<string>();
-  const [to, setTo] = useState<string>();
-  const [message, setMessage] = useState<string>();
-  const [currentUserProfile, setCurrentUserProfile] = useState<object>();
+  
+  const [posts, setPosts] = useState([]);
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [from, setFrom] = useState();
+  const [to, setTo] = useState();
+  const [message, setMessage] = useState();
+  const [currentUserProfile, setCurrentUserProfile] = useState();
 
   const backHandler = BackHandler.addEventListener(
     'hardwareBackPress',
@@ -57,7 +57,7 @@ const HomeScreen = ({route}) => {
         setPosts(data.jobPosts);
       })
       .catch(error => console.error(error));
-
+      
   const getProfileData = async () =>
     await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile?id=${route.params.identityNo}`,
@@ -70,15 +70,19 @@ const HomeScreen = ({route}) => {
       },
     )
       .then(response => response.json())
-      .then(data => setCurrentUserProfile(data));
+      .then(data => setCurrentUserProfile(data?.profileData?.filter(current=> current?.reference === route?.params?.identityNo)));
 
-  const file = currentUserProfile?.profileData[0]?.file;
+      
+
+
+  const file = currentUserProfile[0]?.file;
+  console.log("file: ", file)
   useEffect(() => {
     getPosts();
     getProfileData();
   }, [route.params?.registrationNo, posts]);
 
-  const deletePost = async (id: string) => {
+  const deletePost = async (id) => {
     return await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/posts?id=${id}`,
       {
@@ -120,7 +124,7 @@ const HomeScreen = ({route}) => {
       })
       .catch(error => console.error(error));
 
-  const report = async (body: Redact_Reports) =>
+  const report = async (body) =>
     await fetch(
       `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/reports`,
       {
@@ -140,7 +144,7 @@ const HomeScreen = ({route}) => {
       .catch(error => console.error(error));
 
   const addApplicantToPost = async (
-    applicant: Redact_Business_Applications,
+    applicant,
     post,
   ) => {
     console.log("Applicants: ", post.applicants.push(applicant));

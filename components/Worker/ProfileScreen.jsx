@@ -6,28 +6,27 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Alert,
   Modal,
 } from 'react-native';
 import {Card, TextInput, Button} from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DocumentPicker from 'react-native-document-picker';
-import AWS from 'aws-sdk';
 import RNFS from 'react-native-fs';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 export const ProfileScreen = ({navigation, route}) => {
-  const [modalVisibility, setModalVisibility] = useState<boolean>(false);
-  const [description, setDescription] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [avatar, setAvatar] = useState<string>('');
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [description, setDescription] = useState('');
+  const [email, setEmail] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [file, setFile] = useState('');
   const [details, setDetails] = useState([]);
-  console.log('route: ', route);
 
   const getProfileDetails = async () =>
     await fetch(
-      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile?id=${route.params.registrationNo}`,
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile?id=${route.params.identityNo}`,
       {
         method: 'GET',
         headers: {
@@ -46,7 +45,6 @@ export const ProfileScreen = ({navigation, route}) => {
     getProfileDetails();
   }, [route]);
 
-  console.log(details);
   const save = async () =>
     await fetch(
       'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile',
@@ -59,13 +57,21 @@ export const ProfileScreen = ({navigation, route}) => {
         body: JSON.stringify({
           avatar: avatar,
           file: file,
-          reference: route.params.registrationNo,
+          reference: route.params.identityNo,
           description,
         }),
       },
     )
-      .then(result => console.log('result: ', result))
-      .catch(error => console.log(error));
+      .then(() =>
+        console.log(Alert.alert('Success!', 'Profile Successfully updated!')),
+      )
+      .catch(() =>
+        Alert.alert(
+          'Error!',
+          'An error occurred while trying to update profile.',
+        ),
+      );
+
   function openImageLibraryAndSelectImage() {
     // Define options for the image picker
     const options = {
@@ -104,8 +110,6 @@ export const ProfileScreen = ({navigation, route}) => {
 
         const fileContent = await RNFS.readFile(pathToLocalFile, 'base64');
         setFile(fileContent);
-        console.log('file: ', file);
-        console.log('response: ', fileContent);
       });
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
@@ -116,14 +120,20 @@ export const ProfileScreen = ({navigation, route}) => {
     }
   }
 
-  console.log("details: ", details)
+  console.log('details: ', details);
+
+  const userDetails = details?.filter(
+    detail => detail?.reference === route?.params?.identityNo,
+  );
+
+  console.log('details: ', userDetails);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}></View>
 
-      {details ? (
-        <Image style={styles.avatar} source={{uri: details[0]?.avatar}} />
+      {userDetails ? (
+        <Image style={styles.avatar} source={{uri: userDetails[0]?.avatar}} />
       ) : (
         <Image
           style={styles.avatar}
@@ -133,11 +143,10 @@ export const ProfileScreen = ({navigation, route}) => {
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <Text style={styles.name}>
-            {route.params.companyName ?? 'John Doe'}
+            {route.params.username + ' ' + route.params.surname ?? 'John Doe'}
           </Text>
-          <Text style={styles.info}>UX Designer / Mobile developer</Text>
           <Text style={styles.description}>
-            {details[0]?.description ??
+            {userDetails[0]?.description ??
               'Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an'}
           </Text>
 

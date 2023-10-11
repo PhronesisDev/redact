@@ -23,11 +23,11 @@ export const ProfileScreen = ({navigation, route}) => {
   const [avatar, setAvatar] = useState<string>('');
   const [file, setFile] = useState('');
   const [details, setDetails] = useState([]);
-//   console.log('route: ', route);
+  console.log('route: ', route);
 
   const getProfileDetails = async () =>
     await fetch(
-      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile?id=${route.params.identityNo}`,
+      `https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile?id=${route.params.registrationNo}`,
       {
         method: 'GET',
         headers: {
@@ -46,7 +46,7 @@ export const ProfileScreen = ({navigation, route}) => {
     getProfileDetails();
   }, [route]);
 
-
+  console.log(details);
   const save = async () =>
     await fetch(
       'https://qzpdlhayeb.execute-api.us-east-1.amazonaws.com/prod/profile',
@@ -59,7 +59,7 @@ export const ProfileScreen = ({navigation, route}) => {
         body: JSON.stringify({
           avatar: avatar,
           file: file,
-          reference: route.params.identityNo,
+          reference: route.params.registrationNo,
           description,
         }),
       },
@@ -104,6 +104,8 @@ export const ProfileScreen = ({navigation, route}) => {
 
         const fileContent = await RNFS.readFile(pathToLocalFile, 'base64');
         setFile(fileContent);
+        console.log('file: ', file);
+        console.log('response: ', fileContent);
       });
     } catch (error) {
       if (DocumentPicker.isCancel(error)) {
@@ -114,18 +116,14 @@ export const ProfileScreen = ({navigation, route}) => {
     }
   }
 
-  console.log("details: ", details);
-
-  const userDetails = details?.filter(detail=> detail?.reference === route?.params?.identityNo);
-
-  console.log("details: ", userDetails);
+  console.log("details: ", details)
 
   return (
     <View style={styles.container}>
       <View style={styles.header}></View>
 
-      {userDetails ? (
-        <Image style={styles.avatar} source={{uri: userDetails[0]?.avatar}} />
+      {details ? (
+        <Image style={styles.avatar} source={{uri: details[0]?.avatar}} />
       ) : (
         <Image
           style={styles.avatar}
@@ -135,11 +133,10 @@ export const ProfileScreen = ({navigation, route}) => {
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <Text style={styles.name}>
-            {route.params.username + " " + route.params.surname ?? 'John Doe'}
+            {route.params.companyName ?? 'John Doe'}
           </Text>
-          <Text style={styles.info}>UX Designer / Mobile developer</Text>
           <Text style={styles.description}>
-            {userDetails[0]?.description ??
+            {details[0]?.description ??
               'Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an'}
           </Text>
 
